@@ -1,14 +1,22 @@
 import React, { Component } from 'react';
 //import dai from '../abi/dai.';
+import Layout from '../components/Layout';
 import SenderForm from '../components/SenderForm';
 
 class SyndicateWalletIndex extends Component {
+
+    /*
+    static async getInitialProps() {
+        const daiWallet = await dai.methods.getSummary().call();
+        return { daiWallet };
+    }
+    */
+
     render(){
         return(
-           <React.StrictMode>
-                <h1>Welcome</h1>
+            <Layout>
                 <SenderForm />
-           </React.StrictMode>
+            </Layout>
         )
     }
 }
