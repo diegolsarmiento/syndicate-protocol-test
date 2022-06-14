@@ -1,31 +1,31 @@
-const Bank = artifacts.require("Bank");
+const Bank = artifacts.require('Bank');
 const { expect } = require('chai');
 const { BN, ether, balance } = require('@openzeppelin/test-helpers');
 // Choices are:  `["BigNumber", "BN", "String"]
 // Use https://github.com/indutny/bn.js/
 Bank.numberFormat = "BN";
 // ABIs are from https://github.com/ryanio/truffle-mint-dai/tree/master/test/abi
-const daiABI = require("./abi/dai");
-const usdcABI = require("./abi/erc20");
+const daiABI = require('./abi/build/dai');
+const usdcABI = require('./abi/build/erc20');
 
-const daiContractAddress = "0x6b175474e89094c44da98b954eedeac495271d0f";
+const daiContractAddress = process.env.CONTRACT_DEPLOYED_TO;
 const daiContract = new web3.eth.Contract(daiABI, daiContractAddress);
-const daiWhale = "0xF977814e90dA44bFA03b6295A0616a897441aceC";
+const daiWhale = process.env.DAI_WHALE;
 // You can see an example of decimals in use by comparing the $25,039,869 in the
 // contract under the Tokens field on Etherscan (as of writing) to the value
 // below
 // The Etherscan value can be found at https://etherscan.io/address/0xF977814e90dA44bFA03b6295A0616a897441aceC
 daiWhaleBalance = daiContract.methods.balanceOf(daiWhale).call().then(
-  function (value) { console.log("Balance of daiWhale: " + value); }
+  function (value) { console.log('Balance of daiWhale: ' + value); }
 );
 
 // Modify sendDai and setupDai to be a generic method for any ERC20 if you want
 // test with USDC as well
-const usdcContractAddress = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
+const usdcContractAddress = process.env.USDC_CONTRACT_ADDRESS;
 const usdcContract = new web3.eth.Contract(daiABI, daiContractAddress);
-const usdcWhale = "0x3dfd23A6c5E8BbcFc9581d2E864a68feb6a076d3";
+const usdcWhale = process.env.USDC_WHALE;
 
-const bankFeeAddress = "0xcD0Bf0039d0F09CF93f9a05fB57C2328F6D525A3";
+const bankFeeAddress = process.env.BANK_FEE_ADDRESS;
 
 // This function sends ETH to an address. This is only used to pay gas fees, you
 // probably won't need this.
@@ -55,7 +55,7 @@ async function sendDai(fromAccount, toAccount, amount) {
     .transfer(toAccount, amount.toString())
     .send({ from: fromAccount, gasLimit: 800000 });
   const daiBalance = await daiContract.methods.balanceOf(toAccount).call();
-  console.log("Dai balance", daiBalance.toString());
+  console.log('Dai balance', daiBalance.toString());
   assert.notEqual(
     daiBalance.toString(),
     "0",
@@ -116,22 +116,22 @@ async function setupDai(account, bankAddress, amountDai) {
     `daiAllowance was ${daiAllowance} while approval was for ${amountDai}`,
   );
 
-  console.log("daiAllowance is " + daiAllowance);
+  console.log('daiAllowance is ' + daiAllowance);
 }
 
 // Tests begin here
-contract("Bank", function (accounts) {
+contract('Bank', function (accounts) {
   let bankInstance;
   const bankOwner = accounts[0];
   const bankUser = accounts[1];
 
 
-  before("setup", async () => {
+  before('setup', async () => {
     bankInstance = await Bank.deployed();
     // console.log('Using Bank at ', bankInstance.address);
   });
 
-  after("clean up", async () => {
+  after('clean up', async () => {
     bankInstance = null;
   });
 
