@@ -1,12 +1,18 @@
+
+const assert = require('assert');
+const Web3 = require('web3');
+const web3 = new Web3(provider);
+
 const Bank = artifacts.require('Bank');
 const { expect } = require('chai');
 const { BN, ether, balance } = require('@openzeppelin/test-helpers');
+
 // Choices are:  `["BigNumber", "BN", "String"]
 // Use https://github.com/indutny/bn.js/
 Bank.numberFormat = "BN";
 // ABIs are from https://github.com/ryanio/truffle-mint-dai/tree/master/test/abi
-const daiABI = require('./abi/dai');
-const usdcABI = require('./abi/erc20');
+const daiABI = require('../ethereum/abi/dai');
+const usdcABI = require('../ethereum/abi/erc20');
 
 const daiContractAddress = process.env.CONTRACT_DEPLOYED_TO;
 const daiContract = new web3.eth.Contract(daiABI, daiContractAddress);

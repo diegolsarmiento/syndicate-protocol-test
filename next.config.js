@@ -5,7 +5,7 @@ const webpack = require('webpack');
 */
 
 const { parsed: myEnv } = require('dotenv').config({
-    path: 'abi/.env'
+    path: 'ethereum/.env'
 });
 
 module.exports = {

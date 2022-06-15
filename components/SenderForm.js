@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { Form, Input, Message, Button, Dropdown } from 'semantic-ui-react';
-// import dai from '../abi/dai.';
-// import { Router } from 'next/router';
-// import Web3 from 'web3';
+import daiContract from '../ethereum/dai';
+import web3 from '../ethereum/web3';
 
 class SenderForm extends Component {
 
@@ -23,20 +22,17 @@ class SenderForm extends Component {
     onHandledSubmit = async (event) => {
         event.preventDefault();
 
-        //const abi = abit(this.props.address);
+        const contract = daiContract(this.props.address);
         this.setState({ loading: true, errorMessage: '' });
 
-        /*
         try {
-            const accounts = await Web3.eth.getAccounts();
-            await  campaign.methods.getSummary().send({
-                from: accounts[0],
-                value: web3.utils.toWei(this.state.value, 'ether'),
-            });
+            const accounts = await web3.eth.getAccounts();
+            const balance = await  contract.methods.balanceOf(accounts[0]).call();
+            this.setState({ value: balance });
         } catch (err) {
             this.setState({ errorMessage: err.message })
         }
-        */
+    
         this.setState({ loading: false, value: ''});
     }
 
