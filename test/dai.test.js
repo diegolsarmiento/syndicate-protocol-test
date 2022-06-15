@@ -5,8 +5,8 @@ const { BN, ether, balance } = require('@openzeppelin/test-helpers');
 // Use https://github.com/indutny/bn.js/
 Bank.numberFormat = "BN";
 // ABIs are from https://github.com/ryanio/truffle-mint-dai/tree/master/test/abi
-const daiABI = require('./abi/build/dai');
-const usdcABI = require('./abi/build/erc20');
+const daiABI = require('./abi/dai');
+const usdcABI = require('./abi/erc20');
 
 const daiContractAddress = process.env.CONTRACT_DEPLOYED_TO;
 const daiContract = new web3.eth.Contract(daiABI, daiContractAddress);
