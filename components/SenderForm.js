@@ -50,7 +50,7 @@ class SenderForm extends Component {
         return (
             <Form onSubmit={this.onHandledSubmit} error={!!this.state.errorMessage}>
                 <Form.Field>
-                    <label>ABI Form</label>
+                    <div className='title'>ABI Form</div>
                     <Input
                         value={this.state.value}
                         onChange={(event) => this.setState({ value: event.target.value })}
@@ -65,10 +65,10 @@ class SenderForm extends Component {
                     onChange={this.onHandledDropChange} />
                 </Form.Field>
                 <Form.Field>
-                    <label>{this.currencyLabel.text} 1.2</label>
+                    <div className='result'>{this.currencyLabel.text} 1.2</div>
                 </Form.Field>
                 <Message error header='Oh no!' content={this.state.errorMessage} />
-                <Button primary loading={this.state.loading}>
+                <Button primary loading={this.state.loading} size='massive'>
                     Send
                 </Button>
             </Form>
