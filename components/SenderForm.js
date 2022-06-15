@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Form, Input, Message, Button, Dropdown } from 'semantic-ui-react';
-import daiContract from '../ethereum/dai';
+import daiContract from '../ethereum/daiContract';
 import web3 from '../ethereum/web3';
 
 class SenderForm extends Component {
@@ -13,6 +13,7 @@ class SenderForm extends Component {
     ],
     selected: 'dai',
     value: '',
+    balance: 0,
     errorMessage: '',
     loading: false
    };
@@ -20,20 +21,17 @@ class SenderForm extends Component {
    currencyLabel  =  { key: 'dai', text: 'DAI', value: 'dai' };
 
     onHandledSubmit = async (event) => {
-        event.preventDefault();
 
-        const contract = daiContract(this.props.address);
+        event.preventDefault();
         this.setState({ loading: true, errorMessage: '' });
 
         try {
             const accounts = await web3.eth.getAccounts();
-            const balance = await  contract.methods.balanceOf(accounts[0]).call();
-            this.setState({ value: balance });
+            const balance = await  daiContract.methods.balanceOf(accounts[0]).call();
+            this.setState({ loading: false, balance });
         } catch (err) {
             this.setState({ errorMessage: err.message })
         }
-    
-        this.setState({ loading: false, value: ''});
     }
 
     onHandledDropChange = (event, data) => {
@@ -61,7 +59,7 @@ class SenderForm extends Component {
                     onChange={this.onHandledDropChange} />
                 </Form.Field>
                 <Form.Field>
-                    <div className='result'>{this.currencyLabel.text} 1.2</div>
+                    <div className='result'>{this.currencyLabel.text} {this.state.balance}</div>
                 </Form.Field>
                 <Message error header='Oh no!' content={this.state.errorMessage} />
                 <Button primary loading={this.state.loading} size='massive'>
