@@ -12,7 +12,7 @@ class SenderForm extends Component {
         { key: 'usdc', text: 'USDC', value: 'usdc' }
     ],
     selected: 'dai',
-    value: '',
+    inputValue: '',
     balance: 0,
     errorMessage: '',
     loading: false
@@ -24,13 +24,24 @@ class SenderForm extends Component {
 
         event.preventDefault();
         this.setState({ loading: true, errorMessage: '' });
+        const address = this.state.inputValue;
+        const addressError = 'You should enter a valid Address';
+        if(address.length == 42) {
+            this.onFormSubmitted(address);
+            this.setState({ loading: false, inputValue: address });
+        } else {
+            this.setState({ errorMessage: addressError });
+            this.setState({ loading: false });
+        }
+    }
 
+    onFormSubmitted = async (address) => {
         try {
-            const accounts = await web3.eth.getAccounts();
-            const balance = await  daiContract.methods.balanceOf(accounts[0]).call();
+            const balance = await  daiContract.methods.balanceOf(address).call();
             this.setState({ loading: false, balance });
         } catch (err) {
-            this.setState({ errorMessage: err.message })
+            this.setState({ errorMessage: err.message });
+            this.setState({ loading: false });
         }
     }
 
@@ -44,12 +55,13 @@ class SenderForm extends Component {
         return (
             <Form onSubmit={this.onHandledSubmit} error={!!this.state.errorMessage}>
                 <Form.Field>
-                    <div className='title'>ABI Form</div>
+                    <div className='title'>{this.props.formLabel}</div>
                     <Input
-                        value={this.state.value}
-                        onChange={(event) => this.setState({ value: event.target.value })}
+                        value={this.state.inputValue}
+                        onChange={(event) => this.setState({ inputValue: event.target.value })}
                         label='Address'
-                        labelPosition='right' />
+                        labelPosition='right'
+                        required />
                 </Form.Field>
                 <Form.Field>
                     <Dropdown 
@@ -63,7 +75,7 @@ class SenderForm extends Component {
                 </Form.Field>
                 <Message error header='Oh no!' content={this.state.errorMessage} />
                 <Button primary loading={this.state.loading} size='massive'>
-                    Update Balance
+                    {this.props.buttonLabel}
                 </Button>
             </Form>
         )
