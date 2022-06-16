@@ -63,7 +63,7 @@ class SenderForm extends Component {
                 </Form.Field>
                 <Message error header='Oh no!' content={this.state.errorMessage} />
                 <Button primary loading={this.state.loading} size='massive'>
-                    Get Balance
+                    Update Balance
                 </Button>
             </Form>
         )
