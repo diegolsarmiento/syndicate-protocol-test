@@ -1,6 +1,6 @@
 # Playground for Web3/React
 
-This project was creating using React and NextJS.
+This project was created using [Ract](https://reactjs.org/docs/getting-started.html) and [Next.js](https://nextjs.org/)
 
 ## Available Scripts
 
