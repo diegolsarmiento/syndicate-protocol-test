@@ -4,7 +4,7 @@ import SenderForm from '../components/SenderForm';
 
 class SyndicateWalletIndex extends Component {
 
-    formLabel = 'ABI Form';
+    formLabel = 'Balance Form';
     buttonLabel = 'Update Balance';
 
     render(){

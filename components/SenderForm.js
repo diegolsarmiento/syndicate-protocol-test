@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Form, Input, Message, Button, Dropdown } from 'semantic-ui-react';
 import daiContract from '../ethereum/daiContract';
+import usdcContract from '../ethereum/usdcContract';
 import web3 from '../ethereum/web3';
 
 class SenderForm extends Component {
@@ -8,7 +9,6 @@ class SenderForm extends Component {
    state = {
     currencies: [
         { key: 'dai', text: 'DAI', value: 'dai' },
-        { key: 'us', text: 'US$', value: 'us' },
         { key: 'usdc', text: 'USDC', value: 'usdc' }
     ],
     selected: 'dai',
@@ -18,16 +18,18 @@ class SenderForm extends Component {
     loading: false
    };
 
-   currencyLabel  =  { key: 'dai', text: 'DAI', value: 'dai' };
+   currencyLabel = 'ETH';
 
     onHandledSubmit = async (event) => {
-
         event.preventDefault();
         this.setState({ loading: true, errorMessage: '' });
         const address = this.state.inputValue;
+        const currency = this.state.selected;
+        const contract = this.contractSelected(currency);
         const addressError = 'You should enter a valid Address';
-        if(address.length == 42) {
-            this.onFormSubmitted(address);
+        // Assumming addresses are at least 42 chars long
+        if(address.length >= 42) {
+            this.onFormSubmitted(address, contract);
             this.setState({ loading: false, inputValue: address });
         } else {
             this.setState({ errorMessage: addressError });
@@ -35,9 +37,21 @@ class SenderForm extends Component {
         }
     }
 
-    onFormSubmitted = async (address) => {
+    contractSelected (currency) {
+        let contract;
+        if (currency === 'usdc') {
+            contract = usdcContract;
+        } else {
+            contract = daiContract;
+        }
+        return contract;
+    }
+
+    onFormSubmitted = async (address, contract) => {
         try {
-            const balance = await  daiContract.methods.balanceOf(address).call();
+            const balanceDraft = await  contract.methods.balanceOf(address).call();
+            const balanceEther =  web3.utils.fromWei(balanceDraft, 'ether');
+            const balance = new Intl.NumberFormat().format(balanceEther);
             this.setState({ loading: false, balance });
         } catch (err) {
             this.setState({ errorMessage: err.message });
@@ -47,8 +61,8 @@ class SenderForm extends Component {
 
     onHandledDropChange = (event, data) => {
         event.preventDefault();
-        this.setState({ selected: data.value });
-        this.currencyLabel = this.state.currencies.find(ele => ele.value == data.value);
+        this.setState({ selected: data.value, balance: 0, inputValue: '' });
+        //this.currencyLabel = this.state.currencies.find(ele => ele.value == data.value);
     }
 
     render() {
@@ -71,7 +85,7 @@ class SenderForm extends Component {
                     onChange={this.onHandledDropChange} />
                 </Form.Field>
                 <Form.Field>
-                    <div className='result'>{this.currencyLabel.text} {this.state.balance}</div>
+                    <div className='result'>{this.currencyLabel} {this.state.balance}</div>
                 </Form.Field>
                 <Message error header='Oh no!' content={this.state.errorMessage} />
                 <Button primary loading={this.state.loading} size='massive'>
