@@ -7,85 +7,85 @@ import web3 from '../ethereum/web3';
 class SenderForm extends Component {
 
    state = {
-    currencies: [
-        { key: 'dai', text: 'DAI', value: 'dai' },
-        { key: 'usdc', text: 'USDC', value: 'usdc' }
-    ],
-    selected: 'dai',
-    inputValue: '',
     balance: 0,
     errorMessage: '',
-    loading: false
+    loading: false,
+    formValues: {
+        inputLabel:'Address',
+        dropDownValues: [
+            { key: 'dai', text: 'DAI', value: 'dai' },
+            { key: 'usdc', text: 'USDC', value: 'usdc' }
+        ],
+        dropDownSelected: 'dai',
+        currencyLabel: 'ETH'
+    }
    };
 
-   currencyLabel = 'ETH';
-
-    onHandledSubmit = async (event) => {
-        event.preventDefault();
-        this.setState({ loading: true, errorMessage: '' });
-        const address = this.state.inputValue;
-        const currency = this.state.selected;
-        const contract = this.contractSelected(currency);
-        const addressError = 'You should enter a valid Address';
-        // Assumming addresses are at least 42 chars long
-        if(address.length >= 42) {
-            this.onFormSubmitted(address, contract);
-            this.setState({ loading: false, inputValue: address });
-        } else {
-            this.setState({ errorMessage: addressError });
-            this.setState({ loading: false });
-        }
+   onHandledSubmit = async (event) => {
+    event.preventDefault();
+    this.setState({ loading: true, errorMessage: '' });
+    const address = this.state.formValues.inputValue;
+    const currency = this.state.formValues.dropDownSelected;
+    const contract = this.contractSelected(currency);
+    const addressError = 'You should enter a valid ' + this.state.formValues.inputLabel;
+    // Assumming addresses are at least 42 chars long
+    if(address.length >= 42) {
+        this.onFormSubmitted(address, contract);
+        this.setState({ loading: false, inputValue: address });
+    } else {
+        this.setState({ errorMessage: addressError });
+        this.setState({ loading: false });
     }
+   }
 
-    contractSelected (currency) {
-        let contract;
-        if (currency === 'usdc') {
-            contract = usdcContract;
-        } else {
-            contract = daiContract;
-        }
-        return contract;
+   contractSelected (currency) {
+    let contract;
+    if (currency === 'usdc') {
+        contract = usdcContract;
+    } else {
+        contract = daiContract;
     }
+    return contract;
+   }
 
-    onFormSubmitted = async (address, contract) => {
-        try {
-            const balanceDraft = await  contract.methods.balanceOf(address).call();
-            const balanceEther =  web3.utils.fromWei(balanceDraft, 'ether');
-            const balance = new Intl.NumberFormat().format(balanceEther);
-            this.setState({ loading: false, balance });
-        } catch (err) {
-            this.setState({ errorMessage: err.message });
-            this.setState({ loading: false });
-        }
+   onFormSubmitted = async (address, contract) => {
+    try {
+        const balanceDraft = await  contract.methods.balanceOf(address).call();
+        const balanceEther =  web3.utils.fromWei(balanceDraft, 'ether');
+        const balance = new Intl.NumberFormat().format(balanceEther);
+        this.setState({ loading: false, balance });
+    } catch (err) {
+        this.setState({ errorMessage: err.message });
+        this.setState({ loading: false });
     }
+   }
 
-    onHandledDropChange = (event, data) => {
-        event.preventDefault();
-        this.setState({ selected: data.value, balance: 0, inputValue: '' });
-        //this.currencyLabel = this.state.currencies.find(ele => ele.value == data.value);
-    }
+   onHandledDropChange = (event, data) => {
+    event.preventDefault();
+    this.setState({ selected: data.value, balance: 0, inputValue: '' });
+   }
 
-    render() {
+   render() {
         return (
             <Form onSubmit={this.onHandledSubmit} error={!!this.state.errorMessage}>
                 <Form.Field>
                     <div className='title'>{this.props.formLabel}</div>
                     <Input
-                        value={this.state.inputValue}
+                        value={this.state.formValues.inputValue}
                         onChange={(event) => this.setState({ inputValue: event.target.value })}
-                        label='Address'
+                        label={this.state.formValues.inputLabel}
                         labelPosition='right'
                         required />
                 </Form.Field>
                 <Form.Field>
                     <Dropdown 
-                    options={this.state.currencies}
+                    options={this.state.formValues.dropDownValues || []}
                     selection 
-                    defaultValue={this.state.selected} 
+                    defaultValue={this.state.formValues.dropDownSelected} 
                     onChange={this.onHandledDropChange} />
                 </Form.Field>
                 <Form.Field>
-                    <div className='result'>{this.currencyLabel} {this.state.balance}</div>
+                    <div className='result'>{this.state.formValues.currencyLabel} {this.state.balance}</div>
                 </Form.Field>
                 <Message error header='Oh no!' content={this.state.errorMessage} />
                 <Button primary loading={this.state.loading} size='massive'>
