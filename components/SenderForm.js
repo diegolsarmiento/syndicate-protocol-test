@@ -17,7 +17,8 @@ class SenderForm extends Component {
             { key: 'usdc', text: 'USDC', value: 'usdc' }
         ],
         dropDownSelected: 'dai',
-        currencyLabel: 'ETH'
+        currencyLabel: 'ETH',
+        inputValue: ''
     }
    };
 
@@ -31,7 +32,7 @@ class SenderForm extends Component {
     // Assumming addresses are at least 42 chars long
     if(address.length >= 42) {
         this.onFormSubmitted(address, contract);
-        this.setState({ loading: false, inputValue: address });
+        this.setState(prevState => ({loading: false, formValues: { ...prevState.formValues, inputValue: address }}));
     } else {
         this.setState({ errorMessage: addressError });
         this.setState({ loading: false });
@@ -62,7 +63,7 @@ class SenderForm extends Component {
 
    onHandledDropChange = (event, data) => {
     event.preventDefault();
-    this.setState({ selected: data.value, balance: 0, inputValue: '' });
+    this.setState(prevState => ({selected: data.value, balance: 0, formValues: { ...prevState.formValues, inputValue: '' }}));
    }
 
    render() {
@@ -72,7 +73,7 @@ class SenderForm extends Component {
                     <div className='title'>{this.props.formLabel}</div>
                     <Input
                         value={this.state.formValues.inputValue}
-                        onChange={(event) => this.setState({ inputValue: event.target.value })}
+                        onChange={(event) => this.setState(prevState => ({formValues: { ...prevState.formValues, inputValue: event.target.value }}))}
                         label={this.state.formValues.inputLabel}
                         labelPosition='right'
                         required />
