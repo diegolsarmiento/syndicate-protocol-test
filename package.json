@@ -7,9 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "mocha",
-    "predeploy": "next build",
-    "deploy": "gh-pages"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
