@@ -47,6 +47,7 @@
   "devDependencies": {
     "@openzeppelin/test-helpers": "^0.5.15",
     "chai": "^4.3.6",
+    "eslint": "^8.18.0",
     "gh-pages": "^4.0.0"
   }
 }
