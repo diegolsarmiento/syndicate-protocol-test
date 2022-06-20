@@ -10,7 +10,7 @@ class SyndicateWalletIndex extends Component {
     render(){
         return(
             <Layout>
-                <SenderForm formLabel={this.formLabel}  buttonLabel={this.buttonLabel} formValues={this.formValues}/>
+                <SenderForm formLabel={this.formLabel}  buttonLabel={this.buttonLabel} />
             </Layout>
         )
     }
