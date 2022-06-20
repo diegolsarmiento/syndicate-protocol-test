@@ -1,6 +1,6 @@
 # Playground for Web3/React
 
-This project was created using [React](https://reactjs.org/docs/getting-started.html) and [Next.js](https://nextjs.org/)
+This project was created using [React](https://reactjs.org/docs/getting-started.html) and [Next.js](https://nextjs.org)
 
 ![Web3/React](./public/images/form.png "Syndicate Protocol")
 
