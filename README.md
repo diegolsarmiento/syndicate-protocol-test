@@ -2,6 +2,8 @@
 
 This project was created using [React](https://reactjs.org/docs/getting-started.html) and [Next.js](https://nextjs.org)
 
+[Demo](https://syndicate-protocol-test.vercel.app/)
+
 ![Web3/React](./public/images/form.png "Syndicate Protocol")
 
 ## Available Scripts
